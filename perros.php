@@ -3,15 +3,22 @@ require_once "funciones.php";
 
 $raza = strtolower(trim($_GET["raza"] ?? ""));
 
+$cantidad = (int)($_GET["cantidad"] ?? 5);
+$permitidas = [5, 10, 20];
+
+if (!in_array($cantidad, $permitidas, true)) {
+    $cantidad = 5;
+}
+
 $imagenes = [];
 $error = null;
 
 if ($raza === "") {
-    $url = "https://dog.ceo/api/breeds/image/random/1";
+    $url = "https://dog.ceo/api/breeds/image/random/" . $cantidad;
 } else {
     $url = "https://dog.ceo/api/breed/"
          . urlencode($raza)
-         . "/images/random/1";
+         . "/images/random/" . $cantidad;
 }
 
 $resultado = consumirApiGet($url);
@@ -52,6 +59,16 @@ if ($resultado["ok"]) {
         placeholder="hound, beagle, pug, husky"
     >
 
+    <label>Cantidad:</label>
+
+    <select name="cantidad">
+        <?php foreach ($permitidas as $opcion): ?>
+            <option value="<?= $opcion ?>" <?= $opcion === $cantidad ? "selected" : "" ?>>
+                <?= $opcion ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
     <button type="submit">
         Buscar
     </button>
@@ -67,7 +84,8 @@ if ($resultado["ok"]) {
 <?php elseif (count($imagenes) > 0): ?>
 
     <h2>
-        <?= $raza === "" ? "PERRO" : "Raza: " . htmlspecialchars($raza) ?>
+        <?= $raza === "" ? "PERROS" : "Raza: " . htmlspecialchars($raza) ?>
+        (<?= count($imagenes) ?>)
     </h2>
 
     <?php foreach ($imagenes as $imagen): ?>
