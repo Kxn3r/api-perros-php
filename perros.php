@@ -13,28 +13,39 @@ if (!in_array($cantidad, $permitidas, true)) {
 $imagenes = [];
 $error = null;
 
-if ($raza === "") {
-    $url = "https://dog.ceo/api/breeds/image/random/" . $cantidad;
-} else {
-    $url = "https://dog.ceo/api/breed/"
-         . urlencode($raza)
-         . "/images/random/" . $cantidad;
+if ($raza !== "" && !preg_match('/^[a-z]+$/', $raza)) {
+    $error = "Escribe solo letras, sin números ni símbolos. Ejemplo: beagle.";
 }
 
-$resultado = consumirApiGet($url);
+if ($error === null) {
 
-if ($resultado["ok"]) {
-    $imagenes = $resultado["datos"]["message"] ?? [];
-
-    if (!is_array($imagenes)) {
-        $imagenes = [$imagenes];
+    if ($raza === "") {
+        $url = "https://dog.ceo/api/breeds/image/random/" . $cantidad;
+    } else {
+        $url = "https://dog.ceo/api/breed/"
+             . urlencode($raza)
+             . "/images/random/" . $cantidad;
     }
 
-    if (count($imagenes) === 0) {
-        $error = "No se encontraron imágenes para la raza indicada.";
+    $resultado = consumirApiGet($url);
+
+    if (!$resultado["ok"]) {
+        if ($resultado["codigo"] === 404) {
+            $error = "La raza \"" . $raza . "\" no existe. Revisa el nombre e intenta de nuevo.";
+        } else {
+            $error = "No pudimos conectar con el servicio de perros. Intenta de nuevo en unos minutos.";
+        }
+    } else {
+        $imagenes = $resultado["datos"]["message"] ?? [];
+
+        if (!is_array($imagenes)) {
+            $imagenes = [$imagenes];
+        }
+
+        if (count($imagenes) === 0) {
+            $error = "No se encontraron imágenes para la raza indicada.";
+        }
     }
-} else {
-    $error = $resultado["error"];
 }
 ?>
 
