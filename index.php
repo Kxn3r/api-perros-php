@@ -2,17 +2,21 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taller 06 - PHP + APIs</title>
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
 
-<h1>Taller 06</h1>
+<main class="contenedor">
+    <h1>Taller 06</h1>
 
-<ul>
-    <li><a href="perros.php">perros</a></li>
-    <li><a href="libros.php">Libros</a></li>
-    <li><a href="posts.php">Posts</a></li>
-</ul>
+    <ul class="menu">
+        <li><a href="perros.php">Perros</a></li>
+        <li><a href="libros.php">Libros</a></li>
+        <li><a href="posts.php">Posts</a></li>
+    </ul>
+</main>
 
 </body>
 </html>
